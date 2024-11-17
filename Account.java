@@ -26,4 +26,9 @@ public class Account {
     public void setProfile(String newProfile) {
         profile = newProfile;
     }
+
+    // public void linkBankAccount(BankAccount bankAccount) {
+    //     bankAccount.deposit(balance);
+    //     balance = 0;
+    // }
 }
