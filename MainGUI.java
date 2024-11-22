@@ -8,45 +8,105 @@ public class MainGUI extends JFrame {
     // Constructor to set up the GUI
     public MainGUI() {
         setTitle("Budget App");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+    setSize(800, 600);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setLayout(new BorderLayout());
 
-        // Create Components (Buttons, Panels, etc.)
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 2));
+    // Create a menu bar
+    JMenuBar menuBar = new JMenuBar();
+    JMenu accountMenu = new JMenu("Account");
+    menuBar.add(accountMenu);
 
-        JButton button1 = new JButton("Button 1");
-        JButton button2 = new JButton("Button 2");
+    JMenuItem fileMenu1 = new JMenuItem("Sign up");
+    JMenuItem fileMenu2 = new JMenuItem("Log in");
+    accountMenu.add(fileMenu1);
+    accountMenu.add(fileMenu2);
 
-        panel.add(button1);
-        panel.add(button2);
+    // Add menu bar to the frame
+    add(menuBar, BorderLayout.NORTH);
 
-        // Add panel to the frame
-        add(panel, BorderLayout.CENTER);
+    // Create an instance of the AccountPanel class
+    AccountPanel accountPanel = new AccountPanel();
 
-        // Add Action Listeners
-        button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to handle button 1 click
-                JOptionPane.showMessageDialog(null, "Button 1 Clicked");
-            }
-        });
+    // Add the AccountPanel instance to the frame
+    add(accountPanel, BorderLayout.CENTER);
+    
+    // Get the text area from the AccountPanel instance
+    JTextArea accountTextArea = accountPanel.getAccountTextArea();
 
-        button2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to handle button 2 click
-                JOptionPane.showMessageDialog(null, "Button 2 Clicked");
-            }
-        });
+    // Get the reset button from the AccountPanel instance
+    JButton accountBtn_reset = accountPanel.getAccountBtn_reset();
+
+    accountBtn_reset.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            accountTextArea.setText("");
+        }
+    });
+
+    // Set the frame visible
+    setVisible(true);
     }
 
+    public class AccountPanel extends JPanel {
+
+        private JTextArea accountTextArea;
+        private JButton accountBtn_send;
+        private JButton accountBtn_reset;
+    
+        public AccountPanel() {
+            setLayout(new BorderLayout());
+    
+            // Create an account label
+            JLabel accountLabel = new JLabel("Account");
+            add(accountLabel, BorderLayout.NORTH);
+    
+            // Create an account text area
+            accountTextArea = new JTextArea();
+            add(accountTextArea, BorderLayout.CENTER);
+    
+            // Create an account panel at the bottom
+            JPanel accountBottomPanel = new JPanel();
+            accountBottomPanel.setLayout(new FlowLayout());
+    
+            accountBtn_send = new JButton("Send");
+            accountBtn_reset = new JButton("Reset");
+    
+            accountBottomPanel.add(accountBtn_send);
+            accountBottomPanel.add(accountBtn_reset);
+    
+            add(accountBottomPanel, BorderLayout.SOUTH);
+    
+            // Add action listeners
+            accountBtn_send.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    accountTextArea.append("Account updated\n");
+                }
+            });
+    
+            accountBtn_reset.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    accountTextArea.setText("");
+                }
+            });
+        }
+    
+        public JTextArea getAccountTextArea() {
+            return accountTextArea;
+        }
+    
+        public JButton getAccountBtn_send() {
+            return accountBtn_send;
+        }
+    
+        public JButton getAccountBtn_reset() {
+            return accountBtn_reset;
+        }
+    }
+    
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MainGUI gui = new MainGUI();
-            gui.setVisible(true);
-        });
+        new MainGUI();
     }
 }
