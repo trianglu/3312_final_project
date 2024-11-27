@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainGUI extends JFrame {
-    protected BudgetAppPanel budgetAppPanel = null;
+    protected BudgetAppPanel budgetAppPanel = new BudgetAppPanel();
     protected AccountPanel accountPanel = null;
     protected BudgetPanel budgetPanel = null;
     protected CategoryPanel categoryPanel = null;
@@ -27,7 +27,11 @@ public class MainGUI extends JFrame {
         // Create a menu bar
         
         menuBar.add(budgetAppMenu);
-        budgetAppMenu.setVisible(true);
+        menuBar.add(accountMenu);
+        menuBar.add(budgetMenu);
+        menuBar.add(categoryMenu);
+        menuBar.add(expenseMenu);
+
         accountMenu.setVisible(false);
         budgetMenu.setVisible(false);
         categoryMenu.setVisible(false);
@@ -51,7 +55,6 @@ public class MainGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Open the BudgetApp panel
                 getContentPane().removeAll();
-                budgetAppPanel = new BudgetAppPanel();
                 add(budgetAppPanel, BorderLayout.CENTER);
                 revalidate();
                 repaint();
@@ -62,8 +65,11 @@ public class MainGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // open the account panel and close any open panels
+                if (accountPanel == null) {
+                    accountPanel = new AccountPanel();
+                }
+
                 getContentPane().removeAll();
-                accountPanel = new AccountPanel();
                 add(accountPanel, BorderLayout.CENTER);
                 revalidate();
                 repaint();
@@ -74,8 +80,10 @@ public class MainGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // open the budget panel and close any open panels
+                if(budgetPanel == null) {
+                    budgetPanel = new BudgetPanel();
+                }
                 getContentPane().removeAll();
-                budgetPanel = new BudgetPanel();
                 add(budgetPanel, BorderLayout.CENTER);
                 revalidate();
                 repaint();
@@ -85,9 +93,11 @@ public class MainGUI extends JFrame {
         categoryMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(categoryPanel == null) {
+                    categoryPanel = new CategoryPanel();
+                }
                 // open the category panel and close any open panels
                 getContentPane().removeAll();
-                categoryPanel = new CategoryPanel();
                 add(categoryPanel, BorderLayout.CENTER);
                 revalidate();
                 repaint();
@@ -97,20 +107,26 @@ public class MainGUI extends JFrame {
         expenseMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(expensePanel == null) {
+                    expensePanel = new ExpensePanel();
+                }
                 // open the expense panel and close any open panels
                 getContentPane().removeAll();
-                expensePanel = new ExpensePanel();
                 add(expensePanel, BorderLayout.CENTER);
                 revalidate();
                 repaint();
             }
         });
+
+
     }
 
-    public class BudgetAppPanel extends JPanel {
+    public class BudgetAppPanel extends JPanel implements Runnable {
         private JTextArea budgetAppTextArea;
         private JButton budgetAppBtn_create_account;
+        private JButton budgetAppBtn_open_account;
         private JButton budgetAppBtn_reset;
+
 
         public BudgetAppPanel() {
             setLayout(new BorderLayout());
@@ -128,10 +144,14 @@ public class MainGUI extends JFrame {
             budgetAppBottomPanel.setLayout(new FlowLayout());
 
             budgetAppBtn_create_account = new JButton("Create Account");
+            budgetAppBtn_open_account = new JButton("Open Account");
             budgetAppBtn_reset = new JButton("Reset");
 
             budgetAppBottomPanel.add(budgetAppBtn_create_account);
+            budgetAppBottomPanel.add(budgetAppBtn_open_account);
             budgetAppBottomPanel.add(budgetAppBtn_reset);
+
+            budgetAppBtn_open_account.setVisible(BudgetApp.getAccount() != null);
 
             add(budgetAppBottomPanel, BorderLayout.SOUTH);
 
@@ -143,8 +163,13 @@ public class MainGUI extends JFrame {
                     BudgetApp.createAccount();
                     budgetAppTextArea.append("Please enter your details to create an account:\n");
                     String firstName = JOptionPane.showInputDialog(null, "Enter First Name:");
+                    firstName = firstName == null ? " " : firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
+
                     String lastName = JOptionPane.showInputDialog(null, "Enter Last Name:");
+                    lastName = lastName == null ? " " : lastName.substring(0,1).toUpperCase() + lastName.substring(1);
+
                     String email = JOptionPane.showInputDialog(null, "Enter Email:");
+                    email = email == null ? " " : email.toLowerCase();
                     
                     Account account = BudgetApp.getAccount();
                     account.setFirstName(firstName);
@@ -155,13 +180,23 @@ public class MainGUI extends JFrame {
                     budgetAppTextArea.append("Account created\n");
                     budgetAppTextArea.append("Welcome " + firstName + " " + lastName + "\n");
 
+                    // Set the account menu visible
                     accountMenu.setVisible(true);
-                    budgetMenu.setVisible(true);
-                    categoryMenu.setVisible(true);
-                    expenseMenu.setVisible(true);
+                    budgetMenu.setVisible(false);
+                    categoryMenu.setVisible(false);
+                    expenseMenu.setVisible(false);
+
+                    budgetAppBtn_open_account.setVisible(BudgetApp.getAccount() != null);
                 }
             });
 
+            budgetAppBtn_open_account.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    run();
+                }
+            });
+            
             budgetAppBtn_reset.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -176,6 +211,25 @@ public class MainGUI extends JFrame {
 
         public JButton getBudgetAppBtn_reset() {
             return budgetAppBtn_reset;
+        }
+        
+        @Override
+        public void run() {
+            SwingUtilities.invokeLater(() -> {
+                budgetAppTextArea.append("Open Account\n");
+                budgetAppTextArea.append("Account opened\n");
+                budgetAppTextArea.append("Welcome " + BudgetApp.getAccount().getFirstName() + " " + BudgetApp.getAccount().getLastName() + "\n");
+
+                // Set the account panel visible
+                budgetAppTextArea.setText(null);
+                getContentPane().removeAll();
+                if (accountPanel == null) {
+                    accountPanel = new AccountPanel();
+                }
+                add(accountPanel, BorderLayout.CENTER);
+                revalidate();
+                repaint();
+            });
         }
     }
 
