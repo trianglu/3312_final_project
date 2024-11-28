@@ -25,6 +25,10 @@ public class MainGUI extends JFrame {
     protected Income income = null;
     protected Notification notification = null;
 
+    public static final Color PRIMARY_COLOR = Color.decode("#C9E4CA");
+    public static final Color SECONDARY_COLOR = Color.decode("#A3C1AD");
+    public static final Color BUTTON_COLOR = Color.decode("#8BC34A");
+
     // Constructor to set up the GUI
     public MainGUI() {
         setTitle("Budget App");
@@ -84,11 +88,34 @@ public class MainGUI extends JFrame {
             budgetAppBtn_open_account.setVisible(BudgetApp.getAccount() != null);
     
             add(budgetAppBottomPanel, BorderLayout.SOUTH);
+
+            budgetAppTextArea.setFont(new Font("Arial", Font.BOLD, 14));
+            budgetAppTextArea.append("WELCOME TO THE BUDGET APP!\n");
     
+            budgetAppBtn_create_account.setFont(new Font("Arial", Font.PLAIN, 14));
+            budgetAppBtn_open_account.setFont(new Font("Arial", Font.PLAIN, 14));
+
+            setBackground(Color.decode("#C9E4CA"));
+
+            budgetAppTextArea.setBackground(Color.decode("#A3C1AD"));
+            budgetAppTextArea.setLineWrap(true);
+            budgetAppTextArea.setWrapStyleWord(true);
+            budgetAppTextArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            budgetAppBtn_create_account.setBackground(Color.decode("#8BC34A"));
+            budgetAppBtn_open_account.setBackground(Color.decode("#8BC34A"));
+            
+            setBackground(MainGUI.PRIMARY_COLOR);
+            budgetAppTextArea.setBackground(MainGUI.SECONDARY_COLOR);
+
+            budgetAppBtn_create_account.setBackground(MainGUI.BUTTON_COLOR);
+            budgetAppBtn_open_account.setBackground(MainGUI.BUTTON_COLOR);
+                        
             // Add action listeners
             budgetAppBtn_create_account.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    budgetAppTextArea.setFont(new Font("Arial", Font.PLAIN, 14));
                     budgetAppTextArea.append("Create Account\n");
                     BudgetApp.createAccount();
                     budgetAppTextArea.append("Please enter your details to create an account:\n");
@@ -101,13 +128,6 @@ public class MainGUI extends JFrame {
                     BudgetApp.getAccount().setLastName(lastName);
                     BudgetApp.getAccount().setEmail(email);
                     budgetAppTextArea.append("Account created successfully\n");
-                    budgetAppBtn_open_account.setVisible(true);
-
-                    accountMenu.setVisible(true);
-                    budgetMenu.setVisible(false);
-                    categoryMenu.setVisible(false);
-                    expenseMenu.setVisible(false);
-
                     budgetAppBtn_open_account.setVisible(BudgetApp.getAccount() != null);
                 }
             });
@@ -159,6 +179,14 @@ public class MainGUI extends JFrame {
             accountBottomPanel.add(accountBtn_view_notifications);
             accountBottomPanel.add(accountBtn_link_bank_account);
             add(accountBottomPanel, BorderLayout.SOUTH);
+
+            setBackground(MainGUI.PRIMARY_COLOR);
+            accountTextArea.setBackground(MainGUI.SECONDARY_COLOR);
+
+            accountBtn_view_categories.setBackground(MainGUI.BUTTON_COLOR);
+            accountBtn_add_income.setBackground(MainGUI.BUTTON_COLOR);
+            accountBtn_view_notifications.setBackground(MainGUI.BUTTON_COLOR);
+            accountBtn_link_bank_account.setBackground(MainGUI.BUTTON_COLOR);
             // Add action listeners
             
             accountBtn_view_categories.addActionListener(new ActionListener() {
@@ -250,6 +278,16 @@ public class MainGUI extends JFrame {
             bankBottomPanel.add(bankBtn_view_transaction_history);
             bankBottomPanel.add(bankBtn_back_to_account);
             add(bankBottomPanel, BorderLayout.SOUTH);
+
+            setBackground(MainGUI.PRIMARY_COLOR);
+            bankTextArea.setBackground(MainGUI.SECONDARY_COLOR);
+
+            bankBtn_connect_account.setBackground(MainGUI.BUTTON_COLOR);
+            bankBtn_update_account.setBackground(MainGUI.BUTTON_COLOR);
+            bankBtn_add_another_account.setBackground(MainGUI.BUTTON_COLOR);
+            bankBtn_update_balance.setBackground(MainGUI.BUTTON_COLOR);
+            bankBtn_view_transaction_history.setBackground(MainGUI.BUTTON_COLOR);
+            bankBtn_back_to_account.setBackground(MainGUI.BUTTON_COLOR);
             // Add action listeners
             bankBtn_connect_account.addActionListener(new ActionListener() {
                 @Override
@@ -372,6 +410,14 @@ public class MainGUI extends JFrame {
     
             add(notificationBottomPanel, BorderLayout.SOUTH);
     
+            // Set background color
+            setBackground(PRIMARY_COLOR);
+            notificationTextArea.setBackground(SECONDARY_COLOR);
+
+            notificationBtn_back_to_account.setBackground(BUTTON_COLOR);
+            notificationBtn_get_notification.setBackground(BUTTON_COLOR);
+            notificationBtn_recieve_notifications.setBackground(BUTTON_COLOR);
+
             // Add action listener
             notificationBtn_get_notification.addActionListener(new ActionListener() {
                 @Override
@@ -467,6 +513,13 @@ public class MainGUI extends JFrame {
             budgetBottomPanel.add(budgetBtn_add_category);
     
             add(budgetBottomPanel, BorderLayout.SOUTH);
+
+            setBackground(PRIMARY_COLOR);
+            budgetTextArea.setBackground(SECONDARY_COLOR);
+
+            budgetBtn_add_budget.setBackground(BUTTON_COLOR);
+            budgetBtn_view_categories.setBackground(BUTTON_COLOR);
+            budgetBtn_add_category.setBackground(BUTTON_COLOR);
     
             // Add action listeners
             budgetBtn_add_budget.addActionListener(new ActionListener() {
@@ -530,6 +583,12 @@ public class MainGUI extends JFrame {
             categoryBottomPanel.add(categoryBtn_back_to_account);
     
             add(categoryBottomPanel, BorderLayout.SOUTH);
+
+            setBackground(PRIMARY_COLOR);
+            categoryTextArea.setBackground(SECONDARY_COLOR);
+
+            categoryBtn_add_category.setBackground(BUTTON_COLOR);
+            categoryBtn_back_to_account.setBackground(BUTTON_COLOR);
     
             // Add action listeners
     
