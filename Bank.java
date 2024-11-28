@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class Bank {
     private int bankID;
     private String bankName;
+    private ArrayList<Integer> accountNumbers = new ArrayList<>();
     private int accountNumber;
     private double balance;
     private ArrayList<Double> transactions; 
@@ -73,5 +74,11 @@ public class Bank {
         this.balance = balance;
     }
 
+    public ArrayList<Integer> getAccountNumbers() {
+        return accountNumbers;
+    }
 
+    public void addAccount(int accountNumber) {
+        this.accountNumbers.add(accountNumber);
+    }
 }

@@ -1,7 +1,11 @@
+import java.util.ArrayList;
+
 public class Notification {
 
     private boolean notificationSetting;
     private String phoneNumber;
+    private String message;
+    private ArrayList<String> notifications = new ArrayList<>();
 
     public Notification(boolean notificationSetting, String phoneNumber) {
         this.notificationSetting = notificationSetting;
@@ -36,6 +40,19 @@ public class Notification {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+        notifications.add(message);
+    }
+
+    public ArrayList<String> getNotifications() {
+        return notifications;
     }
 
 }

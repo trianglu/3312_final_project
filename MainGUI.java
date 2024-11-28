@@ -16,6 +16,15 @@ public class MainGUI extends JFrame {
     JMenu categoryMenu = new JMenu("Categories");
     JMenu expenseMenu = new JMenu("Expenses");
 
+    protected Budget budget = new Budget();
+    protected Account account = new Account();
+    protected Category category = new Category();
+    protected Expense expense = new Expense();
+    protected BudgetApp budgetApp = new BudgetApp();
+    protected Bank bank = null;
+    protected Income income = null;
+    protected Notification notification = null;
+
     // Constructor to set up the GUI
     public MainGUI() {
         setTitle("Budget App");
@@ -117,6 +126,7 @@ public class MainGUI extends JFrame {
             });
         }
     }  
+    
     public class AccountPanel extends JPanel {
         private JTextArea accountTextArea;
         private JButton accountBtn_view_categories;
@@ -162,8 +172,8 @@ public class MainGUI extends JFrame {
                     CategoryPanel categoryPanel = new CategoryPanel();
                     categoryFrame.add(categoryPanel, BorderLayout.CENTER);
                     categoryFrame.setVisible(true);
-                }
-            });
+                    };
+                });
             accountBtn_add_income.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -205,10 +215,12 @@ public class MainGUI extends JFrame {
             });
         }
     }
+    
     public class BankPanel extends JPanel {
         private JTextArea bankTextArea;
         private JButton bankBtn_connect_account;
         private JButton bankBtn_update_account;
+        private JButton bankBtn_add_another_account;
         private JButton bankBtn_update_balance;
         private JButton bankBtn_view_transaction_history;
         private JButton bankBtn_back_to_account;
@@ -227,11 +239,13 @@ public class MainGUI extends JFrame {
 
             bankBtn_connect_account = new JButton("Link Account");
             bankBtn_update_account = new JButton("Update Account");
+            bankBtn_add_another_account = new JButton("Add Another Account");
             bankBtn_update_balance = new JButton("Update Balance");
             bankBtn_view_transaction_history = new JButton("View Transaction History");
             bankBtn_back_to_account = new JButton("Back to Account");
             bankBottomPanel.add(bankBtn_connect_account);
             bankBottomPanel.add(bankBtn_update_account);
+            bankBottomPanel.add(bankBtn_add_another_account);
             bankBottomPanel.add(bankBtn_update_balance);
             bankBottomPanel.add(bankBtn_view_transaction_history);
             bankBottomPanel.add(bankBtn_back_to_account);
@@ -260,10 +274,10 @@ public class MainGUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // update account logic here
-                    String bankIDInput = JOptionPane.showInputDialog(null, "Enter new Bank ID:");
+                    String bankIDInput = JOptionPane.showInputDialog(null, "Enter Bank ID:");
                     int bankID = Integer.parseInt(bankIDInput);
 
-                    String bankName = JOptionPane.showInputDialog(null, "Enter new Bank Name:");
+                    String bankName = JOptionPane.showInputDialog(null, "Enter Bank Name:");
 
                     String accountNumberInput = JOptionPane.showInputDialog(null, "Enter new Account Number:");
                     int accountNumber = Integer.parseInt(accountNumberInput);
@@ -272,6 +286,16 @@ public class MainGUI extends JFrame {
                     bank.setBankName(bankName);
                     bank.setAccountNumber(accountNumber);
                     bankTextArea.append("Account updated with Bank ID: " + bankID + ", Bank Name: " + bankName + "\n");
+                }
+            });
+            bankBtn_add_another_account.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Add another account logic here
+                    String accountNumberInput = JOptionPane.showInputDialog(null, "Enter New Account Number:");
+                    int accountNumber = Integer.parseInt(accountNumberInput);
+                    bank.addAccount(accountNumber);
+                    bankTextArea.append("Account added with Account Number: " + accountNumber + "\n");
                 }
             });
             bankBtn_update_balance.addActionListener(new ActionListener() {
@@ -320,6 +344,8 @@ public class MainGUI extends JFrame {
     public class NotificationPanel extends JPanel {
     private JTextArea notificationTextArea;
     private JButton notificationBtn_back_to_account;
+    private JButton notificationBtn_get_notification;
+    private JButton notificationBtn_recieve_notifications;
 
     public NotificationPanel() {
             setLayout(new BorderLayout());
@@ -336,14 +362,58 @@ public class MainGUI extends JFrame {
             JPanel notificationBottomPanel = new JPanel();
             notificationBottomPanel.setLayout(new FlowLayout());
     
+            notificationBtn_get_notification = new JButton("Get Notifications");
+            notificationBtn_recieve_notifications = new JButton("Recieve Notifications?");
             notificationBtn_back_to_account = new JButton("Back to Account");
     
+            notificationBottomPanel.add(notificationBtn_get_notification);
+            notificationBottomPanel.add(notificationBtn_recieve_notifications);
             notificationBottomPanel.add(notificationBtn_back_to_account);
     
             add(notificationBottomPanel, BorderLayout.SOUTH);
     
             // Add action listener
+            notificationBtn_get_notification.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Get notification logic here
+                    notificationTextArea.append("Notifications:\n");
+                    if (!notification.getNotifications().isEmpty()) {
+                        for (String notification : notification.getNotifications()) {
+                            notificationTextArea.append(notification + "\n");
+                        }
+                    } else {
+                        notificationTextArea.append("No notifications\n");
+                    }
+                }
+            });
 
+            notificationBtn_recieve_notifications.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Recieve notifications logic here
+                    String[] options = {"Yes", "No"};
+                    int answer = JOptionPane.showOptionDialog(null, "Do you want to recieve notifications?", "Recieve Notifications", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                    
+                    if (answer == 0) {
+                        String phoneNumber = JOptionPane.showInputDialog(null, "Enter phone number:");
+                        notification = new Notification(true, phoneNumber);
+                        
+                        if (notification != null) {
+                            notificationTextArea.append("Notifications will be sent to: " + notification.getPhoneNumber() + "\n");
+                        } else {
+                            notificationTextArea.append("Notification object is null\n");
+                        }
+                    } else {
+                        notificationTextArea.append("Notifications will not be sent\n");
+
+                        if (notification != null) {
+                            notification.setNotificationSetting(false);
+                        }
+                    }
+                }
+            });
+            
             notificationBtn_back_to_account.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -433,51 +503,6 @@ public class MainGUI extends JFrame {
         }
     }
     
-    public class ExpensePanel extends JPanel {
-        private JTextArea expenseTextArea;
-        private JButton expenseBtn_view_expenses;
-        private JButton expenseBtn_add_expense;
-    
-        public ExpensePanel() {
-            setLayout(new BorderLayout());
-    
-            // Create an expense label
-            JLabel expenseLabel = new JLabel("Expense");
-            add(expenseLabel, BorderLayout.NORTH);
-    
-            // Create an expense text area
-            expenseTextArea = new JTextArea();
-            add(expenseTextArea, BorderLayout.CENTER);
-    
-            // Create an expense panel at the bottom
-            JPanel expenseBottomPanel = new JPanel();
-            expenseBottomPanel.setLayout(new FlowLayout());
-    
-            expenseBtn_view_expenses = new JButton("View Expenses");
-            expenseBtn_add_expense = new JButton("Add Expense");
-    
-            expenseBottomPanel.add(expenseBtn_view_expenses);
-            expenseBottomPanel.add(expenseBtn_add_expense);
-    
-            add(expenseBottomPanel, BorderLayout.SOUTH);
-    
-            // Add action listeners
-            expenseBtn_view_expenses.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // View expenses logic here
-                }
-            });
-    
-            expenseBtn_add_expense.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Add expense logic here
-                }
-                });
-                    }
-                }
-    
     public class CategoryPanel extends JPanel {
         private JTextArea categoryTextArea;
         private JButton categoryBtn_add_category;
@@ -516,7 +541,7 @@ public class MainGUI extends JFrame {
                     double allocatedAmount = Double.parseDouble(JOptionPane.showInputDialog(null, "Enter allocated amount:"));
                     Category category = new Category(0, categoryName, allocatedAmount);
                     BudgetApp.addCategory(category);
-                    categoryTextArea.append("Category added: " + category + "\n");
+                    categoryTextArea.append("Category added: " + categoryName + "\n");
                     
                 }
             });
@@ -543,6 +568,7 @@ public class MainGUI extends JFrame {
             });
         }
     }
+    
     public static void main(String[] args) {
         new MainGUI();
     }
