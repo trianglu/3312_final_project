@@ -7,7 +7,11 @@ public class Budget {
     private List<String> categories;   
     private double totalSpent;         
 
-
+    public Budget() {
+        this.totalBudget = 0.0;
+        this.categories = new ArrayList<>();
+        this.totalSpent = 0.0;
+    }
     public Budget(double totalBudget) {
         this.totalBudget = totalBudget;
         this.categories = new ArrayList<>();

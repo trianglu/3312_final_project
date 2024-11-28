@@ -5,6 +5,13 @@ public class Expense {
     private String date;
     private String description;
 
+    public Expense() {
+        this.expenceID = 0;
+        this.amount = 0.0;
+        this.date = "";
+        this.description = "";
+    }
+
     public Expense(int expenceID, double amount, String date, String description) {
         this.expenceID = expenceID;
         this.amount = amount;

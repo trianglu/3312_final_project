@@ -1,9 +1,12 @@
+import java.util.ArrayList;
+
 public class Account {
     private double balance;
     private String profile;
     private String firstName;
     private String lastName;
     private String email;
+    private ArrayList<String> categories = new ArrayList<String>();
 
     public Account(String firstName, String lastName, String email) {
         this.firstName = firstName;
@@ -61,8 +64,21 @@ public class Account {
     public void setEmail(String email) {
         this.email = email;
     }
-    // public void linkBankAccount(BankAccount bankAccount) {
-    //     bankAccount.deposit(balance);
-    //     balance = 0;
-    // }
+
+    public void addIncome(Income income) {
+        balance += income.getAmount();
+    }
+
+    public void addCategory(Category category) {
+        categories.add(category.getCategoryName());
+        balance -= category.getAllocatedAmount();
+    }
+
+    public ArrayList<String> getCategories() {
+        
+        for (String category : categories) {
+            categories.add(category);
+        }
+        return categories;
+    }
 }

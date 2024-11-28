@@ -23,19 +23,20 @@ public class MainGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // // Create a menu bar
-        // menuBar.add(budgetAppMenu);
-        // menuBar.add(accountMenu);
-        // menuBar.add(budgetMenu);
-        // menuBar.add(categoryMenu);
-        // menuBar.add(expenseMenu);
+        // Create a menu bar
+        menuBar.add(budgetAppMenu);
+        menuBar.add(accountMenu);
+        menuBar.add(budgetMenu);
+        menuBar.add(categoryMenu);
+        menuBar.add(expenseMenu);
 
-        // accountMenu.setVisible(false);
-        // budgetMenu.setVisible(false);
-        // categoryMenu.setVisible(false);
-        // expenseMenu.setVisible(false);
-        // // Add menu bar to the frame
-        // add(menuBar, BorderLayout.NORTH);
+        budgetAppMenu.setVisible(true);
+        accountMenu.setVisible(false);
+        budgetMenu.setVisible(false);
+        categoryMenu.setVisible(false);
+        expenseMenu.setVisible(false);
+
+        add(menuBar, BorderLayout.NORTH);
 
         // Create a budgetApp panel
         budgetAppPanel = new BudgetAppPanel();
@@ -43,174 +44,86 @@ public class MainGUI extends JFrame {
         add(budgetAppPanel, BorderLayout.CENTER);
 
         setVisible(true);
-
-        // // Add action listeners to the menu items
-        // budgetAppMenu.addActionListener(new ActionListener() {
-        //     @Override
-        //     public void actionPerformed(ActionEvent e) {
-        //         // Open the BudgetApp panel
-        //         getContentPane().removeAll();
-        //         add(budgetAppPanel, BorderLayout.CENTER);
-        //         revalidate();
-        //         repaint();
-        //     }
-        // });
-
-        // accountMenu.addActionListener(new ActionListener() {
-        //     @Override
-        //     public void actionPerformed(ActionEvent e) {
-        //         if (accountPanel == null) {
-        //             accountPanel = new AccountPanel();
-        //         }
-
-        //         getContentPane().removeAll();
-        //         add(accountPanel, BorderLayout.CENTER);
-        //         revalidate();
-        //         repaint();
-        //     }
-        // });
     }
 
     public class BudgetAppPanel extends JPanel {
-        private JButton accountBtn;
-        private JButton bankBtn;
-        private JButton incomeBtn;
-        private JButton notificationBtn;
-        private JButton budgetBtn;
-        private JButton expenseBtn;
-        private JButton categoryBtn;
+        private JTextArea budgetAppTextArea;
+        private JButton budgetAppBtn_create_account;
+        private JButton budgetAppBtn_open_account;
     
         public BudgetAppPanel() {
             setLayout(new BorderLayout());
     
             // Create a label for the budget app
-            JLabel budgetAppLabel = new JLabel("Budget App");
+            JLabel budgetAppLabel = new JLabel("Home");
             add(budgetAppLabel, BorderLayout.NORTH);
     
-            // Create a panel for the buttons
-            JPanel buttonPanel = new JPanel();
-            buttonPanel.setLayout(new GridLayout(7, 1));
+            // Create a budgetApp text area
+            budgetAppTextArea = new JTextArea();
+            add(budgetAppTextArea, BorderLayout.CENTER);
     
-            // Create buttons for each panel
-            accountBtn = new JButton("Account");
-            bankBtn = new JButton("Bank");
-            incomeBtn = new JButton("Income");
-            notificationBtn = new JButton("Notification");
-            budgetBtn = new JButton("Budget");
-            expenseBtn = new JButton("Expense");
-            categoryBtn = new JButton("Category");
+            // Create a budgetApp panel at the bottom
+            JPanel budgetAppBottomPanel = new JPanel();
+            budgetAppBottomPanel.setLayout(new FlowLayout());
     
-            // Add action listeners to the buttons
-            accountBtn.addActionListener(new ActionListener() {
+            budgetAppBtn_create_account = new JButton("Create Account");
+            budgetAppBtn_open_account = new JButton("Open Account");
+    
+            budgetAppBottomPanel.add(budgetAppBtn_create_account);
+            budgetAppBottomPanel.add(budgetAppBtn_open_account);
+
+            budgetAppBtn_open_account.setVisible(BudgetApp.getAccount() != null);
+    
+            add(budgetAppBottomPanel, BorderLayout.SOUTH);
+    
+            // Add action listeners
+            budgetAppBtn_create_account.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // Open the account panel
-                    AccountPanel accountPanel = new AccountPanel();
+                    budgetAppTextArea.append("Create Account\n");
+                    BudgetApp.createAccount();
+                    budgetAppTextArea.append("Please enter your details to create an account:\n");
+                    String firstName = JOptionPane.showInputDialog(null, "Enter First Name:");
+                    firstName = firstName == null ? " " : firstName.substring(0, 1).toUpperCase() + firstName.substring(1);
+                    String lastName = JOptionPane.showInputDialog(null, "Enter Last Name:");
+                    lastName = lastName == null ? " " : lastName.substring(0, 1).toUpperCase() + lastName.substring(1);
+                    String email = JOptionPane.showInputDialog(null, "Enter Email:");
+                    BudgetApp.getAccount().setFirstName(firstName);
+                    BudgetApp.getAccount().setLastName(lastName);
+                    BudgetApp.getAccount().setEmail(email);
+                    budgetAppTextArea.append("Account created successfully\n");
+                    budgetAppBtn_open_account.setVisible(true);
+
+                    accountMenu.setVisible(true);
+                    budgetMenu.setVisible(false);
+                    categoryMenu.setVisible(false);
+                    expenseMenu.setVisible(false);
+
+                    budgetAppBtn_open_account.setVisible(BudgetApp.getAccount() != null);
+                }
+            });
+    
+            budgetAppBtn_open_account.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
                     JFrame accountFrame = new JFrame("Account");
                     accountFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    accountFrame.add(accountPanel);
-                    accountFrame.pack();
+                    accountFrame.setSize(800, 600);
+                    accountFrame.setLayout(new BorderLayout());
+                    AccountPanel accountPanel = new AccountPanel();
+                    accountFrame.add(accountPanel, BorderLayout.CENTER);
                     accountFrame.setVisible(true);
                 }
             });
-    
-            bankBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Open the bank panel
-                    BankPanel bankPanel = new BankPanel();
-                    JFrame bankFrame = new JFrame("Bank");
-                    bankFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    bankFrame.add(bankPanel);
-                    bankFrame.pack();
-                    bankFrame.setVisible(true);
-                }
-            });
-    
-            incomeBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Open the income panel
-                    IncomePanel incomePanel = new IncomePanel();
-                    JFrame incomeFrame = new JFrame("Income");
-                    incomeFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    incomeFrame.add(incomePanel);
-                    incomeFrame.pack();
-                    incomeFrame.setVisible(true);
-                }
-            });
-    
-            notificationBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Open the notification panel
-                    NotificationPanel notificationPanel = new NotificationPanel();
-                    JFrame notificationFrame = new JFrame("Notification");
-                    notificationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    notificationFrame.add(notificationPanel);
-                    notificationFrame.pack();
-                    notificationFrame.setVisible(true);
-                }
-            });
-    
-            budgetBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Open the budget panel
-                    BudgetPanel budgetPanel = new BudgetPanel();
-                    JFrame budgetFrame = new JFrame("Budget");
-                    budgetFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    budgetFrame.add(budgetPanel);
-                    budgetFrame.pack();
-                    budgetFrame.setVisible(true);
-                }
-            });
-    
-            expenseBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Open the expense panel
-                    ExpensePanel expensePanel = new ExpensePanel();
-                    JFrame expenseFrame = new JFrame("Expense");
-                    expenseFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    expenseFrame.add(expensePanel);
-                    expenseFrame.pack();
-                    expenseFrame.setVisible(true);
-                }
-            });
-    
-            categoryBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Open the category panel
-                    CategoryPanel categoryPanel = new CategoryPanel();
-                    JFrame categoryFrame = new JFrame("Category");
-                    categoryFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    categoryFrame.add(categoryPanel);
-                    categoryFrame.pack();
-                    categoryFrame.setVisible(true);
-                }
-            });
-    
-            // Add the buttons to the button panel
-            buttonPanel.add(accountBtn);
-            buttonPanel.add(bankBtn);
-            buttonPanel.add(incomeBtn);
-            buttonPanel.add(notificationBtn);
-            buttonPanel.add(budgetBtn);
-            buttonPanel.add(expenseBtn);
-            buttonPanel.add(categoryBtn);
-    
-            // Add the button panel to the budget app panel
-            add(buttonPanel, BorderLayout.CENTER);
         }
     }  
     public class AccountPanel extends JPanel {
         private JTextArea accountTextArea;
-        private JButton accountBtn_view_transactions;
-        private JButton accountBtn_view_budgets;
-        private JButton accountBtn_view_income;
+        private JButton accountBtn_view_categories;
+        private JButton accountBtn_add_income;
         private JButton accountBtn_view_notifications;
+        private JButton accountBtn_link_bank_account;
+
         public AccountPanel() {
             setLayout(new BorderLayout());
             // Create an account label
@@ -221,52 +134,85 @@ public class MainGUI extends JFrame {
             accountTextArea = new JTextArea();
             add(accountTextArea, BorderLayout.CENTER);
 
+            accountTextArea.append("Welcome to your account, " + BudgetApp.getAccount().getFirstName() + " " + BudgetApp.getAccount().getLastName() + "\n");
+
             // Create an account panel at the bottom
             JPanel accountBottomPanel = new JPanel();
             accountBottomPanel.setLayout(new FlowLayout());
 
-            accountBtn_view_transactions = new JButton("View Transactions");
-            accountBtn_view_budgets = new JButton("View Budgets");
-            accountBtn_view_income = new JButton("View Income");
+            accountBtn_view_categories = new JButton("View Categories");
+            accountBtn_add_income = new JButton("Add Income");
             accountBtn_view_notifications = new JButton("View Notifications");
-            accountBottomPanel.add(accountBtn_view_transactions);
-            accountBottomPanel.add(accountBtn_view_budgets);
-            accountBottomPanel.add(accountBtn_view_income);
+            accountBtn_link_bank_account = new JButton("Link Bank Account");
+            accountBottomPanel.add(accountBtn_view_categories);
+            accountBottomPanel.add(accountBtn_add_income);
             accountBottomPanel.add(accountBtn_view_notifications);
+            accountBottomPanel.add(accountBtn_link_bank_account);
             add(accountBottomPanel, BorderLayout.SOUTH);
             // Add action listeners
-            accountBtn_view_transactions.addActionListener(new ActionListener() {
+            
+            accountBtn_view_categories.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // View transactions logic here
+                    // View categories logic here
+                    JFrame categoryFrame = new JFrame("Categories");
+                    categoryFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    categoryFrame.setSize(800, 600);
+                    categoryFrame.setLayout(new BorderLayout());
+                    CategoryPanel categoryPanel = new CategoryPanel();
+                    categoryFrame.add(categoryPanel, BorderLayout.CENTER);
+                    categoryFrame.setVisible(true);
                 }
             });
-            accountBtn_view_budgets.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // View budgets logic here
-                }
-            });
-            accountBtn_view_income.addActionListener(new ActionListener() {
+            accountBtn_add_income.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // View income logic here
+                    String incomeID = JOptionPane.showInputDialog(null, "Enter income ID:");
+                    String incomeAmount = JOptionPane.showInputDialog(null, "Enter income amount:");
+                    String incomeFrequency = JOptionPane.showInputDialog(null, "Enter income frequency:");
+                    
+                    Income income = new Income(Integer.parseInt(incomeID), Double.parseDouble(incomeAmount), Double.parseDouble(incomeFrequency));
+                    BudgetApp.getAccount().addIncome(income);
+                    accountTextArea.append("Income added successfully\n");
                 }
             });
             accountBtn_view_notifications.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // View notifications logic here
+                    JFrame notificationFrame = new JFrame("Notifications");
+                    notificationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    notificationFrame.setSize(800, 600);
+                    notificationFrame.setLayout(new BorderLayout());
+                    NotificationPanel notificationPanel = new NotificationPanel();
+                    notificationFrame.add(notificationPanel, BorderLayout.CENTER);
+                    notificationFrame.setVisible(true);
+                }
+            });
+            accountBtn_link_bank_account.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Link bank account logic here
+                    JFrame bankFrame = new JFrame("Bank");
+                    bankFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    bankFrame.setSize(800, 600);
+                    bankFrame.setLayout(new BorderLayout());
+                    BankPanel bankPanel = new BankPanel();
+                    bankFrame.add(bankPanel, BorderLayout.CENTER);
+                    bankFrame.setVisible(true);
                 }
             });
         }
     }
     public class BankPanel extends JPanel {
         private JTextArea bankTextArea;
-        private JButton bankBtn_create_account;
-        private JButton bankBtn_delete_account;
+        private JButton bankBtn_connect_account;
+        private JButton bankBtn_update_account;
         private JButton bankBtn_update_balance;
         private JButton bankBtn_view_transaction_history;
+        private JButton bankBtn_back_to_account;
+        private Bank bank;
         public BankPanel() {
             setLayout(new BorderLayout());
             // Create a bank label
@@ -279,74 +225,93 @@ public class MainGUI extends JFrame {
             JPanel bankBottomPanel = new JPanel();
             bankBottomPanel.setLayout(new FlowLayout());
 
-            bankBtn_create_account = new JButton("Create Account");
-            bankBtn_delete_account = new JButton("Delete Account");
+            bankBtn_connect_account = new JButton("Link Account");
+            bankBtn_update_account = new JButton("Update Account");
             bankBtn_update_balance = new JButton("Update Balance");
             bankBtn_view_transaction_history = new JButton("View Transaction History");
-            bankBottomPanel.add(bankBtn_create_account);
-            bankBottomPanel.add(bankBtn_delete_account);
+            bankBtn_back_to_account = new JButton("Back to Account");
+            bankBottomPanel.add(bankBtn_connect_account);
+            bankBottomPanel.add(bankBtn_update_account);
             bankBottomPanel.add(bankBtn_update_balance);
             bankBottomPanel.add(bankBtn_view_transaction_history);
+            bankBottomPanel.add(bankBtn_back_to_account);
             add(bankBottomPanel, BorderLayout.SOUTH);
             // Add action listeners
-            bankBtn_create_account.addActionListener(new ActionListener() {
+            bankBtn_connect_account.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // Create account logic here
+                    String bankIDInput = JOptionPane.showInputDialog(null, "Enter Bank ID:");
+                    int bankID = Integer.parseInt(bankIDInput);
+
+                    String bankName = JOptionPane.showInputDialog(null, "Enter Bank Name:");
+
+                    String accountNumberInput = JOptionPane.showInputDialog(null, "Enter Account Number:");
+                    int accountNumber = Integer.parseInt(accountNumberInput);
+
+                    String initialBalanceInput = JOptionPane.showInputDialog(null, "Enter Initial Balance:");
+                    double initialBalance = Double.parseDouble(initialBalanceInput);
+
+                    bank = new Bank(bankID, bankName, accountNumber, initialBalance);
+                    bankTextArea.append("Account created with Bank ID: " + bankID + ", Bank Name: " + bankName + ", Account Number: " + accountNumber + ", Initial Balance: " + initialBalance + "\n");
                 }
             });
-            bankBtn_delete_account.addActionListener(new ActionListener() {
+            bankBtn_update_account.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // Delete account logic here
+                    // update account logic here
+                    String bankIDInput = JOptionPane.showInputDialog(null, "Enter new Bank ID:");
+                    int bankID = Integer.parseInt(bankIDInput);
+
+                    String bankName = JOptionPane.showInputDialog(null, "Enter new Bank Name:");
+
+                    String accountNumberInput = JOptionPane.showInputDialog(null, "Enter new Account Number:");
+                    int accountNumber = Integer.parseInt(accountNumberInput);
+
+                    bank.setBankID(bankID);
+                    bank.setBankName(bankName);
+                    bank.setAccountNumber(accountNumber);
+                    bankTextArea.append("Account updated with Bank ID: " + bankID + ", Bank Name: " + bankName + "\n");
                 }
             });
             bankBtn_update_balance.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // Update balance logic here
+                    String balanceInput = JOptionPane.showInputDialog(null, "Enter new Balance:");
+                    double balance = Double.parseDouble(balanceInput);
+                    bank.updateBalance(balance);
+                    bankTextArea.append("Balance updated to: " + bank.getBalance() + "\n");
                 }
             });
             bankBtn_view_transaction_history.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // View transaction history logic here
+                    bankTextArea.append("Transaction History:\n");
+                    for (Double transaction : bank.getTransactions()) {
+                        bankTextArea.append(transaction.toString() + "\n");
+                    }
                 }
             });
-        }
-    }
-    public class IncomePanel extends JPanel {
-        private JTextArea incomeTextArea;
-        private JButton incomeBtn_view_income_streams;
-        private JButton incomeBtn_add_income_stream;
-        public IncomePanel() {
-            setLayout(new BorderLayout());
-            // Create an income label
-            JLabel incomeLabel = new JLabel("Income");
-            add(incomeLabel, BorderLayout.NORTH);
-            // Create an income text area
-            incomeTextArea = new JTextArea();
-            add(incomeTextArea, BorderLayout.CENTER);
-            // Create an income panel at the bottom
-            JPanel incomeBottomPanel = new JPanel();
-            incomeBottomPanel.setLayout(new FlowLayout());
-            incomeBtn_view_income_streams = new JButton("View Income Streams");
-            incomeBtn_add_income_stream = new JButton("Add Income Stream");
 
-            incomeBottomPanel.add(incomeBtn_view_income_streams);
-            incomeBottomPanel.add(incomeBtn_add_income_stream);
-            add(incomeBottomPanel, BorderLayout.SOUTH);
-            // Add action listeners
-            incomeBtn_view_income_streams.addActionListener(new ActionListener() {
+            bankBtn_back_to_account.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // View income streams logic here
-                }
-            });
-            incomeBtn_add_income_stream.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Add income stream logic here
+                    JFrame accountFrame = new JFrame("Account");
+                    accountFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    accountFrame.setSize(800, 600);
+                    accountFrame.setLayout(new BorderLayout());
+
+                    // Create a new AccountPanel instance
+                    AccountPanel accountPanel = new AccountPanel();
+                    accountFrame.add(accountPanel, BorderLayout.CENTER);
+
+                    // Make the account frame visible
+                    accountFrame.setVisible(true);
+
+                    // Dispose the current frame
+                    dispose();
                 }
             });
         }
@@ -354,7 +319,7 @@ public class MainGUI extends JFrame {
 
     public class NotificationPanel extends JPanel {
     private JTextArea notificationTextArea;
-    private JButton notificationBtn_view_notifications;
+    private JButton notificationBtn_back_to_account;
 
     public NotificationPanel() {
             setLayout(new BorderLayout());
@@ -371,17 +336,31 @@ public class MainGUI extends JFrame {
             JPanel notificationBottomPanel = new JPanel();
             notificationBottomPanel.setLayout(new FlowLayout());
     
-            notificationBtn_view_notifications = new JButton("View Notifications");
+            notificationBtn_back_to_account = new JButton("Back to Account");
     
-            notificationBottomPanel.add(notificationBtn_view_notifications);
+            notificationBottomPanel.add(notificationBtn_back_to_account);
     
             add(notificationBottomPanel, BorderLayout.SOUTH);
     
             // Add action listener
-            notificationBtn_view_notifications.addActionListener(new ActionListener() {
+
+            notificationBtn_back_to_account.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // View notifications logic here
+                    JFrame accountFrame = new JFrame("Account");
+                    accountFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    accountFrame.setSize(800, 600);
+                    accountFrame.setLayout(new BorderLayout());
+
+                    // Create a new AccountPanel instance
+                    AccountPanel accountPanel = new AccountPanel();
+                    accountFrame.add(accountPanel, BorderLayout.CENTER);
+
+                    // Make the account frame visible
+                    accountFrame.setVisible(true);
+
+                    // Dispose the current frame
+                    dispose();
                 }
             });
         }
@@ -389,9 +368,10 @@ public class MainGUI extends JFrame {
 
     public class BudgetPanel extends JPanel {
         private JTextArea budgetTextArea;
-        private JButton budgetBtn_view_budgets;
-        private JButton budgetBtn_view_expenses;
         private JButton budgetBtn_view_categories;
+        private JButton budgetBtn_add_budget;
+        private JButton budgetBtn_add_category;
+        private Budget budget = new Budget();
     
         public BudgetPanel() {
             setLayout(new BorderLayout());
@@ -407,30 +387,26 @@ public class MainGUI extends JFrame {
             // Create a budget panel at the bottom
             JPanel budgetBottomPanel = new JPanel();
             budgetBottomPanel.setLayout(new FlowLayout());
-    
-            budgetBtn_view_budgets = new JButton("View Budgets");
-            budgetBtn_view_expenses = new JButton("View Expenses");
-            budgetBtn_view_categories = new JButton("View Categories");
-    
-            budgetBottomPanel.add(budgetBtn_view_budgets);
-            budgetBottomPanel.add(budgetBtn_view_expenses);
-            budgetBottomPanel.add(budgetBtn_view_categories);
 
+            budgetBtn_view_categories = new JButton("View Categories");
+            budgetBtn_add_budget = new JButton("Add Budget");
+            budgetBtn_add_category = new JButton("Add Category");
+            
+            budgetBottomPanel.add(budgetBtn_add_budget);
+            budgetBottomPanel.add(budgetBtn_view_categories);
+            budgetBottomPanel.add(budgetBtn_add_category);
     
             add(budgetBottomPanel, BorderLayout.SOUTH);
     
             // Add action listeners
-            budgetBtn_view_budgets.addActionListener(new ActionListener() {
+            budgetBtn_add_budget.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    // View budgets logic here
-                }
-            });
-    
-            budgetBtn_view_expenses.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // View expenses logic here
+                    // Add budget logic here
+                    String budgetInput = JOptionPane.showInputDialog(null, "Enter how much you're planning on budgeting:");
+                    double budgetAmount = Double.parseDouble(budgetInput);
+                    budget.setTotalBudget(budgetAmount);
+                    budgetTextArea.append("Budget added for: " + budgetAmount + "\n");
                 }
             });
     
@@ -438,6 +414,20 @@ public class MainGUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // View categories logic here
+                    budgetTextArea.append("Categories:\n");
+                    for (String category : budget.getCategories()) {
+                        budgetTextArea.append(category + "\n");
+                    }
+                }
+            });
+
+            budgetBtn_add_category.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Add category logic here
+                    String categoryInput = JOptionPane.showInputDialog(null, "Enter a category:");
+                    budget.addCategory(categoryInput);
+                    budgetTextArea.append("Category added: " + categoryInput + "\n");
                 }
             });
         }
@@ -490,8 +480,8 @@ public class MainGUI extends JFrame {
     
     public class CategoryPanel extends JPanel {
         private JTextArea categoryTextArea;
-        private JButton categoryBtn_view_categories;
         private JButton categoryBtn_add_category;
+        private JButton categoryBtn_back_to_account;
     
         public CategoryPanel() {
             setLayout(new BorderLayout());
@@ -508,26 +498,47 @@ public class MainGUI extends JFrame {
             JPanel categoryBottomPanel = new JPanel();
             categoryBottomPanel.setLayout(new FlowLayout());
     
-            categoryBtn_view_categories = new JButton("View Categories");
             categoryBtn_add_category = new JButton("Add Category");
+            categoryBtn_back_to_account = new JButton("Back to Account");
     
-            categoryBottomPanel.add(categoryBtn_view_categories);
             categoryBottomPanel.add(categoryBtn_add_category);
+            categoryBottomPanel.add(categoryBtn_back_to_account);
     
             add(categoryBottomPanel, BorderLayout.SOUTH);
     
             // Add action listeners
-            categoryBtn_view_categories.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // View categories logic here
-                }
-            });
     
             categoryBtn_add_category.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // Add category logic here
+                    String categoryName = JOptionPane.showInputDialog(null, "Enter category name:");
+                    double allocatedAmount = Double.parseDouble(JOptionPane.showInputDialog(null, "Enter allocated amount:"));
+                    Category category = new Category(0, categoryName, allocatedAmount);
+                    BudgetApp.addCategory(category);
+                    categoryTextArea.append("Category added: " + category + "\n");
+                    
+                }
+            });
+
+            categoryBtn_back_to_account.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Back to account logic here
+                    JFrame accountFrame = new JFrame("Account");
+                    accountFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    accountFrame.setSize(800, 600);
+                    accountFrame.setLayout(new BorderLayout());
+
+                    // Create a new AccountPanel instance
+                    AccountPanel accountPanel = new AccountPanel();
+                    accountFrame.add(accountPanel, BorderLayout.CENTER);
+
+                    // Make the account frame visible
+                    accountFrame.setVisible(true);
+
+                    // Dispose the current frame
+                    dispose();
                 }
             });
         }
@@ -536,4 +547,3 @@ public class MainGUI extends JFrame {
         new MainGUI();
     }
 }
-

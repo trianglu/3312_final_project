@@ -4,6 +4,11 @@ public class Category {
     private String categoryName;
     private double allocatedAmount;
 
+    public Category() {
+        this.categoryID = 0;
+        this.categoryName = "";
+        this.allocatedAmount = 0.0;
+    }
   
     public Category(int categoryID, String categoryName, double allocatedAmount) {
         this.categoryID = categoryID;
