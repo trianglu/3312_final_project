@@ -39,7 +39,7 @@ public class BudgetApp {
         account.addCategory(category);
     }
 
-    public ArrayList<String> getCategories() {
+    public static ArrayList<String> getCategories() {
         return account.getCategories();
     }
 

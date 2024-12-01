@@ -75,10 +75,6 @@ public class Account {
     }
 
     public ArrayList<String> getCategories() {
-        
-        for (String category : categories) {
-            categories.add(category);
-        }
         return categories;
     }
 }

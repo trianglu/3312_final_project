@@ -559,6 +559,7 @@ public class MainGUI extends JFrame {
     public class CategoryPanel extends JPanel {
         private JTextArea categoryTextArea;
         private JButton categoryBtn_add_category;
+        private JButton categoryBtn_view_categories;
         private JButton categoryBtn_back_to_account;
     
         public CategoryPanel() {
@@ -577,9 +578,11 @@ public class MainGUI extends JFrame {
             categoryBottomPanel.setLayout(new FlowLayout());
     
             categoryBtn_add_category = new JButton("Add Category");
+            categoryBtn_view_categories = new JButton("View Categories");
             categoryBtn_back_to_account = new JButton("Back to Account");
     
             categoryBottomPanel.add(categoryBtn_add_category);
+            categoryBottomPanel.add(categoryBtn_view_categories);
             categoryBottomPanel.add(categoryBtn_back_to_account);
     
             add(categoryBottomPanel, BorderLayout.SOUTH);
@@ -602,6 +605,17 @@ public class MainGUI extends JFrame {
                     BudgetApp.addCategory(category);
                     categoryTextArea.append("Category added: " + categoryName + "\n");
                     
+                }
+            });
+
+            categoryBtn_view_categories.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // View categories logic here
+                    categoryTextArea.append("Categories:\n");
+                    for (String category : BudgetApp.getCategories()) {
+                        categoryTextArea.append(category + "\n");
+                    }
                 }
             });
 
